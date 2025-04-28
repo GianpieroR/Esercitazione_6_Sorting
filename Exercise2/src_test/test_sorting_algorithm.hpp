@@ -4,154 +4,147 @@
 #include <vector>
 
 #include <gtest/gtest.h>
-#include "SortingAlgorithm.hpp"
+#include "SortingAlgorithm.hpp" 
+
+using namespace std;
 
 namespace SortLibrary {
 
-/* Here, I test the bubble sort and the heap sort with vectors of int and doubles */
-
+// --- Test ordinamento interi casuali con BubbleSort ---
 TEST(TestSorting, BubbleSortWithInt)
 {
     vector<int> v = {9, 13, 5, 10, 2, 7, 9, 4, 6, 12};
     BubbleSort<int>(v);
-    vector<int> sortedV = {2, 4, 5, 6, 7, 9, 9, 10, 12 ,13};
+    vector<int> sortedV = {2, 4, 5, 6, 7, 9, 9, 10, 12, 13};
     EXPECT_EQ(v, sortedV);
 }
 
+// --- Verifica ordinamento numeri double (casuali) con BubbleSort ---
 TEST(TestSorting, BubbleSortWithDouble)
 {
-	vector<double> v = {12.3, -14.0, 1.7e-5, 1.8e+12, 35.3555, 12.0, 0.0};
-	vector<double> sortedV = {-14.0, 0.0, 1.7e-5, 12.0, 12.3, 35.3555, 1.8e+12};
-	BubbleSort<double>(v);
-	EXPECT_EQ(v,sortedV);
+    vector<double> v = {12.3, -14.0, 1.7e-5, 1.8e+12, 35.3555, 12.0, 0.0};
+    BubbleSort<double>(v);
+    vector<double> sortedV = {-14.0, 0.0, 1.7e-5, 12.0, 12.3, 35.3555, 1.8e+12};
+    EXPECT_EQ(v, sortedV);
 }
-	
+
+// --- Ordinamento di vettore di interi con HeapSort ---
 TEST(TestSorting, HeapSortWithInt)
 {
     vector<int> v = {9, 13, 5, 10, 2, 7, 9, 4, 6, 12};
-    HeapSort<int>(v);
-    vector<int> sortedV = {2, 4, 5, 6, 7, 9, 9, 10, 12 ,13};
+    HeapSort<int>(v, 0, v.size() - 1);
+    vector<int> sortedV = {2, 4, 5, 6, 7, 9, 9, 10, 12, 13};
     EXPECT_EQ(v, sortedV);
 }
 
+// --- Ordinamento di numeri reali con HeapSort ---
 TEST(TestSorting, HeapSortWithDouble)
 {
-	vector<double> v = {12.3, -14.0, 1.7e-5, 1.8e+12, 35.3555, 12.0, 0.0};
-	vector<double> sortedV = {-14.0, 0.0, 1.7e-5, 12.0, 12.3, 35.3555, 1.8e+12};
-	HeapSort<double>(v);
-	EXPECT_EQ(v,sortedV);
+    vector<double> v = {12.3, -14.0, 1.7e-5, 1.8e+12, 35.3555, 12.0, 0.0};
+    HeapSort<double>(v, 0, v.size() - 1);
+    vector<double> sortedV = {-14.0, 0.0, 1.7e-5, 12.0, 12.3, 35.3555, 1.8e+12};
+    EXPECT_EQ(v, sortedV);
 }
 
-/* Now, I run some tests of the two algorithms using the best and the worst case */
-
+// --- Test efficienza BubbleSort su vettore già ordinato ---
 TEST(TestSorting, BubbleSortBestCase)
 {
-	vector<double> v(100);
-	for(int i = 0; i<100; i++)
-		v[i] = 3*i + 4;
-	
-	/* This is just a copy of v inside sortedV, so if 
-	something goes wrong inside the BubbleSort I can see it by 
-	comparing v with this original copy (because v should remain equal to the 
-	original copy in the best case) */
-	
-	vector<double> sortedV = v;
-	BubbleSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v(100);
+    for (int i = 0; i < 100; i++)
+        v[i] = 3 * i + 4;
+
+    vector<double> sortedV = v;
+    BubbleSort<double>(v);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- BubbleSort su input ordinato inversamente (caso pessimo) ---
 TEST(TestSorting, BubbleSortWorstCase)
 {
-	vector<double> v(100);
-	
-	/*I initialize v in decreasing order */
-	
-	for(int i = 0; i<100; i++)
-		v[i] = -4*i;
-	
-	/*Now i put in sortedV the reversed vector v */
-	
-	vector<double> sortedV(100);
-	for(int i = 0; i<100; i++)
-		sortedV[i] = v[100-i-1];
-	BubbleSort(v);
-	
-	/*I expect v after the bubblesort to be equal to its reversed values */
-	
-	EXPECT_EQ(v, sortedV);
+    vector<double> v(100);
+    for (int i = 0; i < 100; i++)
+        v[i] = -4 * i;
+
+    vector<double> sortedV(100);
+    for (int i = 0; i < 100; i++)
+        sortedV[i] = v[100 - i - 1];
+    BubbleSort<double>(v);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- HeapSort su vettore già ordinato: conferma best case ---
 TEST(TestSorting, HeapSortBestCase)
 {
-	vector<double> v(100);
-	for(int i = 0; i<100; i++)
-		v[i] = 3*i + 4;
-	vector<double> sortedV = v;
-	HeapSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v(100);
+    for (int i = 0; i < 100; i++)
+        v[i] = 3 * i + 4;
+
+    vector<double> sortedV = v;
+    HeapSort<double>(v, 0, v.size() - 1);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- HeapSort applicato su vettore inversamente ordinato ---
 TEST(TestSorting, HeapSortWorstCase)
 {
-	vector<double> v(100);
-	for(int i = 0; i<100; i++)
-		v[i] = -4*i;
-	vector<double> sortedV(100);
-	for(int i = 0; i<100; i++)
-		sortedV[i] = v[100-i-1];
-	HeapSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v(100);
+    for (int i = 0; i < 100; i++)
+        v[i] = -4 * i;
+
+    vector<double> sortedV(100);
+    for (int i = 0; i < 100; i++)
+        sortedV[i] = v[100 - i - 1];
+    HeapSort<double>(v, 0, v.size() - 1);
+    EXPECT_EQ(v, sortedV);
 }
 
-/*Here, an idea should be to consider a randomized vector of 500 elements, and 
-then create its copy, apply the two different methods on the vectors, and if the 
-two algorithms work correctly, I should expect an equivalence between the two results, 
-because the starting vector is the same */
-
+// --- Confronto risultati tra HeapSort e BubbleSort su dati casuali ---
 TEST(TestSorting, HeapSort_and_BubbleSort)
 {
-	vector<double> v(500);
-	vector<double> w(500);
-	for(unsigned int i = 0; i<500; i++)
-		v[i] = rand();
-	w = v;
-	BubbleSort<double>(v);
-	HeapSort<double>(w);
-	EXPECT_EQ(v,w);
+    vector<double> v(500);
+    for (unsigned int i = 0; i < 500; i++)
+        v[i] = rand();
+
+    vector<double> w = v;
+    BubbleSort<double>(v);
+    HeapSort<double>(w, 0, w.size() - 1);
+    EXPECT_EQ(v, w);
 }
 
-/* Here, I test the case of HeapSort and BubbleSort with size 1 vectors and void vectors */
- 
+// --- HeapSort su vettore di dimensione 1 ---
 TEST(TestSorting, HeapSortSizeOne)
 {
-	vector<double> v = {4.0};
-	vector<double> sortedV = {4.0};
-	HeapSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v = {4.0};
+    vector<double> sortedV = {4.0};
+    HeapSort<double>(v, 0, v.size() - 1);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- BubbleSort su vettore con un solo elemento ---
 TEST(TestSorting, BubbleSortSizeOne)
 {
-	vector<double> v = {2.0};
-	vector<double> sortedV = {2.0};
-	BubbleSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v = {2.0};
+    vector<double> sortedV = {2.0};
+    BubbleSort<double>(v);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- Ordinamento HeapSort su vettore completamente vuoto ---
 TEST(TestSorting, HeapSortVoidVector)
 {
-	vector<double> v;
-	vector<double> sortedV;
-	HeapSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v;
+    vector<double> sortedV;
+    HeapSort<double>(v, 0, v.size() - 1);
+    EXPECT_EQ(v, sortedV);
 }
 
+// --- BubbleSort applicato a un vettore vuoto ---
 TEST(TestSorting, BubbleSortVoidVector)
 {
-	vector<double> v;
-	vector<double> sortedV;
-	BubbleSort(v);
-	EXPECT_EQ(v, sortedV);
+    vector<double> v;
+    vector<double> sortedV;
+    BubbleSort<double>(v);
+    EXPECT_EQ(v, sortedV);
 }
 
-}
+} // namespace SortLibrary
